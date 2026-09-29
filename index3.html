@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Travel Buddy Finder</title>
+</head>
+
+<body>
+
+    <h1>Travel Buddy Finder</h1>
+
+    <h2>Add Travel Buddy</h2>
+
+    <form action="/buddies" method="POST">
+
+        <label>Buddy ID:</label>
+        <input type="text" name="buddyId" required>
+        <br><br>
+
+        <label>Name:</label>
+        <input type="text" name="name" required>
+        <br><br>
+
+        <label>Destination:</label>
+        <input type="text" name="destination" required>
+        <br><br>
+
+        <label>Age:</label>
+        <input type="number" name="age" required>
+        <br><br>
+
+        <label>Budget:</label>
+        <input type="number" name="budget" required>
+        <br><br>
+
+        <label>Trip Duration:</label>
+        <input type="number" name="tripDuration" required>
+        <br><br>
+
+        <label>Interests:</label>
+        <input type="text" name="interests" required>
+        <br><br>
+
+        <label>Status:</label>
+        <input type="text" name="status" required>
+        <br><br>
+
+        <button type="submit">Add Travel Buddy</button>
+
+    </form>
+
+
+    <hr>
+
+    <h2>Search Buddy by ID</h2>
+
+    <form id="searchForm">
+
+        <label>Buddy ID:</label>
+        <input type="text" id="searchId" required>
+
+        <button type="submit">Search</button>
+
+    </form>
+
+    <pre id="searchResult"></pre>
+
+
+    <hr>
+
+    <h2>Search by Destination and Budget</h2>
+
+    <form id="destinationForm">
+
+        <label>Destination:</label>
+        <input type="text" id="destination" required>
+
+        <br><br>
+
+        <label>Budget Greater Than:</label>
+        <input type="number" id="minBudget" required>
+
+        <br><br>
+
+        <button type="submit">Search</button>
+
+    </form>
+
+    <pre id="destinationResult"></pre>
+
+
+    <hr>
+
+    <h2>Update Destination and Budget</h2>
+
+    <form id="updateForm">
+
+        <label>Buddy ID:</label>
+        <input type="text" id="updateId" required>
+
+        <br><br>
+
+        <label>New Destination:</label>
+        <input type="text" id="newDestination" required>
+
+        <br><br>
+
+        <label>New Budget:</label>
+        <input type="number" id="newBudget" required>
+
+        <br><br>
+
+        <button type="submit">Update</button>
+
+    </form>
+
+    <pre id="updateResult"></pre>
+
+
+    <hr>
+
+    <h2>Delete Travel Buddy</h2>
+
+    <form id="deleteForm">
+
+        <label>Buddy ID:</label>
+        <input type="text" id="deleteId" required>
+
+        <button type="submit">Delete</button>
+
+    </form>
+
+    <pre id="deleteResult"></pre>
+
+
+    <hr>
+
+    <h2>All Travel Buddies</h2>
+
+    <button onclick="showAll()">Display All</button>
+
+    <pre id="allResult"></pre>
+
+
+    <script>
+
+        // Search Buddy ID
+        document.getElementById("searchForm").addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            const id = document.getElementById("searchId").value;
+
+            const response = await fetch("/search/" + id);
+
+            const data = await response.json();
+
+            document.getElementById("searchResult").textContent =
+                JSON.stringify(data, null, 2);
+
+        });
+
+
+        // Search destination and budget
+        document.getElementById("destinationForm").addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            const destination = document.getElementById("destination").value;
+            const budget = document.getElementById("minBudget").value;
+
+            const response = await fetch(
+                "/search/destination?destination=" +
+                destination +
+                "&budget=" +
+                budget
+            );
+
+            const data = await response.json();
+
+            document.getElementById("destinationResult").textContent =
+                JSON.stringify(data, null, 2);
+
+        });
+
+
+        // Update
+        document.getElementById("updateForm").addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            const id = document.getElementById("updateId").value;
+
+            const data = {
+                destination: document.getElementById("newDestination").value,
+                budget: document.getElementById("newBudget").value
+            };
+
+            const response = await fetch("/update/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            document.getElementById("updateResult").textContent =
+                JSON.stringify(result, null, 2);
+
+        });
+
+
+        // Delete
+        document.getElementById("deleteForm").addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            const id = document.getElementById("deleteId").value;
+
+            const response = await fetch("/buddies/" + id, {
+                method: "DELETE"
+            });
+
+            const result = await response.text();
+
+            document.getElementById("deleteResult").textContent = result;
+
+        });
+
+
+        // Display all
+        async function showAll() {
+
+            const response = await fetch("/buddies");
+
+            const data = await response.json();
+
+            document.getElementById("allResult").textContent =
+                JSON.stringify(data, null, 2);
+
+        }
+
+    </script>
+
+</body>
+
+</html>

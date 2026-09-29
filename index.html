@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campus Club Member Management</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 30px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Campus Club Member Management</h1>
+
+
+<!-- ================================= -->
+<!-- TASK 4: ADD MEMBER -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>Add Club Member</h2>
+
+    <form action="/add-member" method="POST">
+
+        <input
+            type="text"
+            name="memberId"
+            placeholder="Member ID"
+            required
+        >
+
+        <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            required
+        >
+
+        <input
+            type="text"
+            name="clubName"
+            placeholder="Club Name"
+            required
+        >
+
+        <input
+            type="number"
+            name="yearOfStudy"
+            placeholder="Year of Study"
+            required
+        >
+
+        <input
+            type="text"
+            name="role"
+            placeholder="Role"
+            required
+        >
+
+        <input
+            type="number"
+            name="points"
+            placeholder="Points"
+            required
+        >
+
+        <input
+            type="text"
+            name="interests"
+            placeholder="Interests"
+            required
+        >
+
+        <input
+            type="text"
+            name="status"
+            placeholder="Status"
+            required
+        >
+
+        <button type="submit">
+            Add Member
+        </button>
+
+    </form>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TASK 5 -->
+<!-- CLUB + POINTS SEARCH -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>Search Club Members</h2>
+
+    <input
+        type="text"
+        id="clubName"
+        placeholder="Club Name"
+    >
+
+    <input
+        type="number"
+        id="clubPoints"
+        placeholder="More than points"
+    >
+
+    <button onclick="searchClub()">
+        Search
+    </button>
+
+    <pre id="clubResult"></pre>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TASK 6 + 7 -->
+<!-- SEARCH MEMBER BY ID -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>Search Member by ID</h2>
+
+    <input
+        type="text"
+        id="searchId"
+        placeholder="Member ID"
+    >
+
+    <button onclick="searchMember()">
+        Search
+    </button>
+
+    <pre id="searchResult"></pre>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TASK 8 -->
+<!-- UPDATE ROLE AND POINTS -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>Update Member</h2>
+
+    <input
+        type="text"
+        id="updateId"
+        placeholder="Member ID"
+    >
+
+    <input
+        type="text"
+        id="updateRole"
+        placeholder="New Role"
+    >
+
+    <input
+        type="number"
+        id="updatePoints"
+        placeholder="New Points"
+    >
+
+    <button onclick="updateMember()">
+        Update
+    </button>
+
+    <pre id="updateResult"></pre>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TASK 9 -->
+<!-- INCREASE CLUB POINTS -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>Increase Club Points</h2>
+
+    <input
+        type="text"
+        id="increaseClub"
+        placeholder="Club Name"
+    >
+
+    <input
+        type="number"
+        id="increaseAmount"
+        placeholder="Points to Increase"
+    >
+
+    <button onclick="increasePoints()">
+        Increase Points
+    </button>
+
+    <pre id="increaseResult"></pre>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TASK 10 -->
+<!-- POINT RANGE -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>Search Points Range</h2>
+
+    <input
+        type="number"
+        id="minPoints"
+        placeholder="Minimum Points"
+    >
+
+    <input
+        type="number"
+        id="maxPoints"
+        placeholder="Maximum Points"
+    >
+
+    <button onclick="searchRange()">
+        Search
+    </button>
+
+    <pre id="rangeResult"></pre>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TASK 11 -->
+<!-- DELETE MEMBER -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>Delete Member</h2>
+
+    <input
+        type="text"
+        id="deleteId"
+        placeholder="Member ID"
+    >
+
+    <button onclick="deleteMember()">
+        Delete
+    </button>
+
+    <pre id="deleteResult"></pre>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- TASK 12 -->
+<!-- DISPLAY ALL MEMBERS -->
+<!-- ================================= -->
+
+<div class="box">
+
+    <h2>All Members</h2>
+
+    <button onclick="showAllMembers()">
+        Display All Members
+    </button>
+
+    <pre id="allResult"></pre>
+
+</div>
+
+
+<script>
+
+// =================================
+// TASK 5
+// =================================
+
+async function searchClub() {
+
+    const clubName =
+        document.getElementById("clubName").value;
+
+    const points =
+        document.getElementById("clubPoints").value;
+
+    const response = await fetch(
+        `/club-search?clubName=${encodeURIComponent(clubName)}&points=${points}`
+    );
+
+    const data = await response.json();
+
+    document.getElementById("clubResult").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+
+// =================================
+// TASK 6 + 7
+// =================================
+
+async function searchMember() {
+
+    const memberId =
+        document.getElementById("searchId").value;
+
+    const response = await fetch(
+        `/search-member?memberId=${encodeURIComponent(memberId)}`
+    );
+
+    const data = await response.json();
+
+    document.getElementById("searchResult").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+
+// =================================
+// TASK 8
+// =================================
+
+async function updateMember() {
+
+    const memberId =
+        document.getElementById("updateId").value;
+
+    const role =
+        document.getElementById("updateRole").value;
+
+    const points =
+        document.getElementById("updatePoints").value;
+
+    const response = await fetch("/update-member", {
+
+        method: "PUT",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            memberId: memberId,
+            role: role,
+            points: points
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("updateResult").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+
+// =================================
+// TASK 9
+// =================================
+
+async function increasePoints() {
+
+    const clubName =
+        document.getElementById("increaseClub").value;
+
+    const increase =
+        document.getElementById("increaseAmount").value;
+
+    const response = await fetch("/increase-points", {
+
+        method: "PUT",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            clubName: clubName,
+            increase: increase
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("increaseResult").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+
+// =================================
+// TASK 10
+// =================================
+
+async function searchRange() {
+
+    const min =
+        document.getElementById("minPoints").value;
+
+    const max =
+        document.getElementById("maxPoints").value;
+
+    const response = await fetch(
+        `/points-range?min=${min}&max=${max}`
+    );
+
+    const data = await response.json();
+
+    document.getElementById("rangeResult").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+
+// =================================
+// TASK 11
+// =================================
+
+async function deleteMember() {
+
+    const memberId =
+        document.getElementById("deleteId").value;
+
+    const response = await fetch(
+        `/delete-member/${encodeURIComponent(memberId)}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    const data = await response.json();
+
+    document.getElementById("deleteResult").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+
+// =================================
+// TASK 12
+// =================================
+
+async function showAllMembers() {
+
+    const response = await fetch("/all-members");
+
+    const data = await response.json();
+
+    document.getElementById("allResult").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+</script>
+
+</body>
+</html>
